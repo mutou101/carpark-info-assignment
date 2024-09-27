@@ -18,9 +18,13 @@ The api/carpark/getByQuery can meet the needs of the first user story.
  
 The api/carpark/addCarpark can add a carpark to database. 
 
+The api/carpark/addBatchesByUpload can store data in CSV files to the database in batches. 
+
 The api/carpark/addMyFavourite can add a specific carpark as my favourite. 
 
-The api/carpark/addBatchesByUpload can store data in CSV files to the database in batches. 
+The api/myFavourite/created can created a user data.
+
+The api/myFavourite/getByName can search for your favorite carparks by inputting your user name.
 
 ## Your Task
 1. Given the CSV dataset (hdb-carpark-information-<timestamp>.csv) that contains details of a list of carparks, design the database to store the given information in the dataset and to support the below given user stories. ER diagram should be provided.

@@ -62,21 +62,22 @@ namespace carpark_info_assignment.Controllers
             return result;
         }
 
-        [HttpPost("addMyFavourite")]
-        public async Task<ActionResult<MyFavourite>> AddMyFavouriteAsync(MyFavourite myFavourite)
-        {
-            var result = await _myFavouriteBusiness.AddMyFavouriteAsync(myFavourite);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return result;
-        }
-
         [HttpPost("addBatchesByUpload")]
         public async Task<ActionResult> AddBatchesByUploadAsync(IFormFile file)
         {
             var result = await _carparkBusiness.AddBatchesByUploadAsync(file.OpenReadStream());
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
+
+
+        [HttpPost("addMyFavourite")]
+        public async Task<ActionResult<Carpark>> AddMyFavouriteAsync(int carparkID, int favouriteId)
+        {
+            var result = await _carparkBusiness.AddMyFavouriteAsync(carparkID, favouriteId);
             if (result == null)
             {
                 return NotFound();

@@ -8,6 +8,8 @@ namespace carpark_info_assignment.Models
     {
         [Required]
         public int Id { get; set; }
+        public int? MyFavouriteId { get; set; }
+        public MyFavourite? MyFavourite { get; set; }
 
         [Name(Constants.CarparkCsvHeaders.CarparkNo)]
         public string CarparkNo { get; set; }

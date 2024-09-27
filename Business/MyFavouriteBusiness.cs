@@ -11,9 +11,25 @@ namespace carpark_info_assignment.Business
             _dbContext = dbContext;
         }
 
-        public async Task<MyFavourite> AddMyFavouriteAsync(MyFavourite myFavourite)
+        public IQueryable<MyFavouriteModel> GetAll(string name) {
+
+            return from myFavourite in _dbContext.MyFavourites
+                   where myFavourite.Name.ToLower() == name.ToLower()
+                   select new MyFavouriteModel
+                   {
+                        Id = myFavourite.Id,
+                        Name = myFavourite.Name,
+                        Carparks = myFavourite.Carparks
+                   };
+        }
+
+        public async Task<MyFavouriteModel> Created(MyFavouriteModel myFavourite)
         {
-            await _dbContext.AddAsync(myFavourite);
+            var entity = new MyFavourite
+            {
+                Name = myFavourite.Name
+            };
+            await _dbContext.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
             return myFavourite;
         }

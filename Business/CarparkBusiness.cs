@@ -1,5 +1,6 @@
 ﻿using carpark_info_assignment.CarparkDb;
 using carpark_info_assignment.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace carpark_info_assignment.Business
 {
@@ -23,9 +24,10 @@ namespace carpark_info_assignment.Business
             {
                 return GetCarparks();
             }
-
             return from carpark in _dbContext.Carparks 
-                   where (carpark.FreeParking.Contains(carparkQuery.FreeParking) || carpark.NightParking == carparkQuery.NightParking || carpark.GantryHeight >= carparkQuery.GantryHeight)
+                   where (carpark.FreeParking.ToLower().Contains(carparkQuery.FreeParking.ToLower()) || 
+                   carpark.NightParking == carparkQuery.NightParking || 
+                   carpark.GantryHeight >= carparkQuery.GantryHeight)
                    select carpark;
         }
 
@@ -39,11 +41,22 @@ namespace carpark_info_assignment.Business
         public async Task<IEnumerable<Carpark>> AddBatchesByUploadAsync(Stream stream)
         {
             var list = _csvService.ReadCsvFile(stream);
-            foreach (var item in list)
-            {
-                await AddCarparkAsync(item);
-            }
+            await _dbContext.AddRangeAsync(list);
+            await _dbContext.SaveChangesAsync();
             return [.. list];
+        }
+
+        public async Task<Carpark> AddMyFavouriteAsync(int carparkId, int myFavouriteId)
+        {
+            var result = await (from carpark in _dbContext.Carparks where carpark.Id == carparkId select carpark).FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return new Carpark();
+            }
+            result.MyFavouriteId = myFavouriteId;
+            _dbContext.Update(result);
+            await _dbContext.SaveChangesAsync();
+            return result;
         }
 
         private static Carpark ItemCarpark(Carpark carpark) =>
